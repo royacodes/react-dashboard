@@ -19,10 +19,15 @@ module.exports = {
     //   }
     // },
     fontFamily: {
-      display: ['Open Sans', 'sans-serif'],
-      body: ['Open Sans', 'sans-serif'],
+      display: ['Roboto', 'sans-serif'],
+      body: ['Roboto', 'sans-serif'],
+      passion: ['Passions Conflict', 'cursive']
     },
     extend: {
+      rotate: {
+        '17': '17deg',
+        '270': '270deg',
+      },
       fontSize: {
         14: '14px',
       },

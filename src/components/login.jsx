@@ -1,21 +1,39 @@
 
 import { LockClosedIcon } from '@heroicons/react/20/solid';
-import appLogo from '../assets/applogo.png';
 import Wizard from './wizard';
 import { Link, Route, Routes } from 'react-router-dom'
+import Lottie from 'react-lottie';
+
+import animationData from '../assets/coin.json'
+
 
 export default function Login() {
+
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+
   return (
     <>
-      <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md space-y-8">
-          <div>
-            <img
-              className="mx-auto h-auto w-auto"
-              src={appLogo}
-              alt="Your Company"
-            />
-            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+       <div className='bg-white grid grid-cols-1 sm:grid-cols-2 h-screen w-full'>
+       <div className='hidden sm:block flex md:inline-flex'>
+        <div className='bg-red-300 hidden sm:block'>
+        <Lottie className='object-none object-center'
+          options={defaultOptions}/>
+        </div>
+        </div>
+       <div className="bg-white flex flex-col justify-center">
+          <div >
+            <h1
+              className="mt-6 text-center text-8xl font-bold tracking-tight text-violet-700 font-passion">PaymentIsland</h1>
+            <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900">
               Sign in to your account
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
@@ -25,7 +43,7 @@ export default function Login() {
               </a>
             </p>
           </div>
-          <form className="mt-8 space-y-6" action="#" method="POST">
+          <form className="mt-8 space-y-6 mx-8 lg:mx-36" action="#" method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="-space-y-px rounded-md shadow-sm">
               <div>
@@ -81,17 +99,18 @@ export default function Login() {
             <div>
               <button
                 type="submit"
-                className="group relative flex w-full justify-center rounded-md border border-transparent bg-emerald-500 py-2 px-4 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="group relative flex w-full justify-center rounded-md border border-transparent bg-violet-700 py-2 px-4 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                  <LockClosedIcon className="h-5 w-5 text-emerald-300 group-hover:text-emerald-500" aria-hidden="true" />
+                  <LockClosedIcon className="h-5 w-5 text-violet-300 group-hover:text-violet-500" aria-hidden="true" />
                 </span>
                 Sign in
               </button>
             </div>
           </form>
         </div>
-      </div>
+       
+    </div>
     </>
   )
 }

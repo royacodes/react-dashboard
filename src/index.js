@@ -10,6 +10,10 @@ import {
 import Wizard from './components/wizard';
 import Login from './components/login';
 import Dashboard from './components/dashboard';
+import Transactions, { AvatarCell, SelectColumnFilter, StatusPill } from './components/transactions'
+
+
+
 
 const router = createBrowserRouter([
   {
@@ -30,6 +34,12 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: <Dashboard/>,
   },
+
+  {
+    path: "/transactions",
+    element: <Transactions/>,
+  },
+
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

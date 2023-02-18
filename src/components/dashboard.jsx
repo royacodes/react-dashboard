@@ -1,12 +1,15 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Transactions from '../components/transactions.jsx'
+import avatar from '../data/avatar2.jpg'
+import { useNavigate } from 'react-router-dom'
+import * as appPath from '../core/path';
 
 
-const navigation = [
-  { name: 'Dashboard', href: '/transactions', current: true },
-  { name: 'Orders', href: '#', current: false },
+let navigation = [
+  // { name: 'Dashboard', href: "/dashboard", current: true },
+  { name: 'Orders', href: '/dashboard', current: true },
   { name: 'Wallet', href: '#', current: false },
   { name: 'API Key', href: '#', current: false },
 ]
@@ -17,8 +20,11 @@ function classNames(...classes) {
 
 
 export default function Dashboard() {
+  let navigate = useNavigate();
+  
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <div>
+<Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -75,7 +81,7 @@ export default function Dashboard() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={avatar}
                         alt=""
                       />
                     </Menu.Button>
@@ -113,7 +119,11 @@ export default function Dashboard() {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href="#"
+                          onClick={() => {
+                            localStorage.removeItem('loginData');
+                            navigate('/');
+                          }}
+                            href=""
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Sign out
@@ -147,7 +157,10 @@ export default function Dashboard() {
           </Disclosure.Panel>
         </>
       )}
+
     </Disclosure>   
+    <Transactions />
+    </div>
     
   )
 }

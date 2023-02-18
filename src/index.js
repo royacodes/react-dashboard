@@ -11,8 +11,9 @@ import Wizard from './components/wizard';
 import Login from './components/login';
 import Dashboard from './components/dashboard';
 import Transactions, { AvatarCell, SelectColumnFilter, StatusPill } from './components/transactions'
+import * as appPath from './core/path';
 
-
+import { AuthProvider } from './components/contexts/authprovider';
 
 
 const router = createBrowserRouter([
@@ -22,21 +23,21 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/login",
+    path: appPath.LOGIN,
     element: <Login/>,
   },
 
   {
-    path: "/steps",
+    path: appPath.REGISTER,
     element: <Wizard/>,
   },
   {
-    path: "/dashboard",
+    path: appPath.DASHBOARD,
     element: <Dashboard/>,
   },
 
   {
-    path: "/transactions",
+    path: appPath.TRANSACTIONS,
     element: <Transactions/>,
   },
 
@@ -45,7 +46,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+      <AuthProvider>
+      <RouterProvider router={router} />
+        </AuthProvider>
+
   </React.StrictMode>
 );
 

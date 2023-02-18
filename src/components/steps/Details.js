@@ -6,6 +6,9 @@ export default function Details() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
+    localStorage.setItem('registerData', userData);
+    console.log(`account user data: ${userData['username']} ${JSON.stringify(userData)}`);
+    localStorage.setItem('registerData', JSON.stringify(userData));
   };
   return (
     <div className="flex flex-col ">

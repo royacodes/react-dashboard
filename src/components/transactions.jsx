@@ -1,9 +1,11 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { BellIcon } from '@heroicons/react/24/outline'
 import { Button, PageButton } from '../shared/button'
 import { classNames } from '../shared/Utils'
 import { SortIcon, SortUpIcon, SortDownIcon } from '../shared/icon'
+import api from '../api/authapi';
+const GET_ORDERS = '/user/merchant/getAllOrdersForThisUser';
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -106,108 +108,153 @@ export function AvatarCell({ value, column, row }) {
   )
 }
 
-
 const getData = () => {
-  const data = [
-    {
-      name: 'Jane Cooper',
-      email: 'jane.cooper@example.com',
-      title: 'Regional Paradigm Technician',
-      department: 'Optimization',
-      status: 'Active',
-      role: 'Admin',
-      age: 27,
-      imgUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    {
-      name: 'Cody Fisher',
-      email: 'cody.fisher@example.com',
-      title: 'Product Directives Officer',
-      department: 'Intranet',
-      status: 'Inactive',
-      role: 'Owner',
-      age: 43,
-      imgUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    {
-      name: 'Esther Howard',
-      email: 'esther.howard@example.com',
-      title: 'Forward Response Developer',
-      department: 'Directives',
-      status: 'Active',
-      role: 'Member',
-      age: 32,
-      imgUrl: 'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    {
-      name: 'Jenny Wilson',
-      email: 'jenny.wilson@example.com',
-      title: 'Central Security Manager',
-      department: 'Program',
-      status: 'Offline',
-      role: 'Member',
-      age: 29,
-      imgUrl: 'https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    {
-      name: 'Kristin Watson',
-      email: 'kristin.watson@example.com',
-      title: 'Lean Implementation Liaison',
-      department: 'Mobility',
-      status: 'Inactive',
-      role: 'Admin',
-      age: 36,
-      imgUrl: 'https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    {
-      name: 'Cameron Williamson',
-      email: 'cameron.williamson@example.com',
-      title: 'Internal Applications Engineer',
-      department: 'Security',
-      status: 'Active',
-      role: 'Member',
-      age: 24,
-      imgUrl: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-  ]
+  let getData = [];
+      let userData = localStorage.getItem('loginData');
+  let dt = JSON.parse(userData);
+  let accessToken = dt["accessToken"];
+  console.log(`accessToken: ${accessToken}` )
+  
+    api.get(GET_ORDERS, {
+      headers: { 'Content-Type': 'application/json', 'x-access-token' : accessToken },
+      withCredentials: false,
+    }).then((response) => {
+      console.log(`orders: ${JSON.stringify(response.data)}`);
+      getData = JSON.parse(JSON.stringify(response.data));
+      console.log(`data ${getData[0]["_id"]}`);
+    }).catch((err) => {
+
+    });
+    const data = getData;
+    console.log(`after get data: ${data}`)
+  // const data = [
+  //   {
+  //     name: 'Jane Cooper',
+  //     email: 'jane.cooper@example.com',
+  //     title: 'Regional Paradigm Technician',
+  //     department: 'Optimization',
+  //     status: 'Active',
+  //     role: 'Admin',
+  //     age: 27,
+  //     imgUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  //   },
+  //   {
+  //     name: 'Cody Fisher',
+  //     email: 'cody.fisher@example.com',
+  //     title: 'Product Directives Officer',
+  //     department: 'Intranet',
+  //     status: 'Inactive',
+  //     role: 'Owner',
+  //     age: 43,
+  //     imgUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  //   },
+  //   {
+  //     name: 'Esther Howard',
+  //     email: 'esther.howard@example.com',
+  //     title: 'Forward Response Developer',
+  //     department: 'Directives',
+  //     status: 'Active',
+  //     role: 'Member',
+  //     age: 32,
+  //     imgUrl: 'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  //   },
+  //   {
+  //     name: 'Jenny Wilson',
+  //     email: 'jenny.wilson@example.com',
+  //     title: 'Central Security Manager',
+  //     department: 'Program',
+  //     status: 'Offline',
+  //     role: 'Member',
+  //     age: 29,
+  //     imgUrl: 'https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  //   },
+  //   {
+  //     name: 'Kristin Watson',
+  //     email: 'kristin.watson@example.com',
+  //     title: 'Lean Implementation Liaison',
+  //     department: 'Mobility',
+  //     status: 'Inactive',
+  //     role: 'Admin',
+  //     age: 36,
+  //     imgUrl: 'https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  //   },
+  //   {
+  //     name: 'Cameron Williamson',
+  //     email: 'cameron.williamson@example.com',
+  //     title: 'Internal Applications Engineer',
+  //     department: 'Security',
+  //     status: 'Active',
+  //     role: 'Member',
+  //     age: 24,
+  //     imgUrl: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
+  //   },
+  // ]
   return [...data, ...data, ...data]
 }
 
-
-
 function Transactions() {
   // Use the state and functions returned from useTable to build your UI
+// let data = [];
+//   useEffect(() => {
+//     let userData = localStorage.getItem('loginData');
+//   let dt = JSON.parse(userData);
+//   let accessToken = dt["accessToken"];
+//   console.log(`accessToken: ${accessToken}` )
+  
+//     api.get(GET_ORDERS, {
+//       headers: { 'Content-Type': 'application/json', 'x-access-token' : accessToken },
+//       withCredentials: false,
+//     }).then((response) => {
+//       console.log(`orders: ${JSON.stringify(response.data)}`);
+//       data = JSON.parse(JSON.stringify(response.data));
+//       console.log(`data ${data[0]["_id"]}`);
+//     }).catch((err) => {
+
+//     });
+//   });
+//   console.log(`data: ${data}`);
+
+
+  const data = React.useMemo(() => getData(), [])
+  console.log(`data: ${data}`);
+
 
   const columns = React.useMemo(() => [
     {
-      Header: "Name",
-      accessor: 'name',
-      Cell: AvatarCell,
-      imgAccessor: "imgUrl",
-      emailAccessor: "email",
+      Header: "Order ID",
+      accessor: 'orderId',
     },
     {
-      Header: "Title",
-      accessor: 'title',
+      Header: "Price",
+      accessor: 'price',
     },
     {
-      Header: "Status",
-      accessor: 'status',
-      Cell: StatusPill,
+      Header: "Transaction Hash",
+      accessor: 'transactionHash',
+      // Filter: SelectColumnFilter,  // new
+      // filter: 'includes',
     },
     {
-      Header: "Age",
-      accessor: 'age',
+      Header: "Date",
+      accessor: 'date',
+      // Cell: AvatarCell,
+      // imgAccessor: "imgUrl",
+      // emailAccessor: "email",
     },
     {
-      Header: "Role",
-      accessor: 'role',
-      Filter: SelectColumnFilter,  // new
-      filter: 'includes',
+      Header: "Confirmation",
+      accessor: 'confirmation',
+      // Filter: SelectColumnFilter,  // new
+      // filter: 'includes',
+    },
+    {
+      Header: "Withdrawal Status",
+      accessor: 'withdraw',
+      // Filter: SelectColumnFilter,  // new
+      // filter: 'includes',
     },
   ], [])
-  
-  const data = React.useMemo(() => getData(), [])
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -227,8 +274,8 @@ function Transactions() {
     setPageSize,
 
     state,
-    preGlobalFilteredRows,
-    setGlobalFilter,
+    // preGlobalFilteredRows,
+    // setGlobalFilter,
   } = useTable({
     columns,
     data,
@@ -242,13 +289,13 @@ function Transactions() {
   // Render the UI for your table
   return (
     <>
-      <div className="sm:flex sm:gap-x-2">
-        <GlobalFilter
+      {/* <div className="sm:flex sm:gap-x-2"> */}
+        {/* <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
           setGlobalFilter={setGlobalFilter}
-        />
-        {headerGroups.map((headerGroup) =>
+        /> */}
+        {/* {headerGroups.map((headerGroup) =>
           headerGroup.headers.map((column) =>
             column.Filter ? (
               <div className="mt-2 sm:mt-0" key={column.id}>
@@ -256,10 +303,10 @@ function Transactions() {
               </div>
             ) : null
           )
-        )}
-      </div>
+        )} */}
+      {/* </div> */}
       {/* table */}
-      <div className="mt-4 flex flex-col">
+      <div className="mt-8 mx-16 flex flex-col">
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -272,7 +319,7 @@ function Transactions() {
                         // we can add them into the header props
                         <th
                           scope="col"
-                          className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          className="group px-6 py-3 text-left text-xs font-bold text-gray-500 tracking-wider"
                           {...column.getHeaderProps(column.getSortByToggleProps())}
                         >
                           <div className="flex items-center justify-between">
@@ -302,6 +349,7 @@ function Transactions() {
                     return (
                       <tr {...row.getRowProps()}>
                         {row.cells.map(cell => {
+                          console.log(`cells: ${cell}`);
                           return (
                             <td
                               {...cell.getCellProps()}
@@ -325,7 +373,7 @@ function Transactions() {
         </div>
       </div>
       {/* Pagination */}
-      <div className="py-3 flex items-center justify-between">
+      {/* <div className="py-3 flex items-center justify-between">
         <div className="flex-1 flex justify-between sm:hidden">
           <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</Button>
           <Button onClick={() => nextPage()} disabled={!canNextPage}>Next</Button>
@@ -387,7 +435,7 @@ function Transactions() {
             </nav>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   )
 }

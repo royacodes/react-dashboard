@@ -10,10 +10,12 @@ import {
 import Wizard from './components/wizard';
 import Login from './components/login';
 import Dashboard from './components/dashboard';
-import Transactions, { AvatarCell, SelectColumnFilter, StatusPill } from './components/transactions'
+import APIKey from './components/apikey'
 import * as appPath from './core/path';
-
+import { BrowserRouter, Routes, Route, Router, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider } from './components/contexts/authprovider';
+import Transactions from './components/transactions';
+import Wallet from './components/wallet';
 
 
 const router = createBrowserRouter([
@@ -37,8 +39,16 @@ const router = createBrowserRouter([
   },
 
   {
-    path: appPath.TRANSACTIONS,
+    path: '/orders',
     element: <Transactions/>,
+  },
+  {
+    path: '/wallet',
+    element: <Wallet/>,
+  },
+  {
+    path: '/apikey',
+    element: <APIKey/>,
   },
 
 ]);

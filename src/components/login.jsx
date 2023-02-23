@@ -93,7 +93,7 @@ const LOGIN_URL = '/auth/signin';
         </div>
         </div>
        <div className="bg-white flex flex-col justify-center">
-          <div >
+          <div>
           <p
 						ref={errRef}
 						className={errMsg ? 'errmsg' : 'offscreen'}

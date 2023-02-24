@@ -21,7 +21,9 @@ module.exports = {
     fontFamily: {
       display: ['Roboto', 'sans-serif'],
       body: ['Roboto', 'sans-serif'],
-      passion: ['Passions Conflict', 'cursive']
+      passion: ['Passions Conflict', 'cursive'],
+      skranji:['Skranji', 'cursive']
+
     },
     extend: {
       rotate: {

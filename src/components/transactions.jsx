@@ -2,6 +2,9 @@ import React, {useEffect, useState, useMemo} from 'react'
 import {useTable} from 'react-table';
 import NavBar from './navbar';
 import api from '../api/authapi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { CircularProgress } from '@mui/material';
 
 const GET_ORDERS = '/user/merchant/getAllOrdersForThisUser';
 
@@ -9,20 +12,41 @@ const GET_ORDERS = '/user/merchant/getAllOrdersForThisUser';
 export default function Transactions() {
 
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     (async () => {
-let userData = await localStorage.getItem('loginData');
-let dt = JSON.parse(userData);
-let accessToken = dt["accessToken"];
-console.log(`accessToken: ${accessToken}` )
+      try {
+        let userData = localStorage.getItem('loginData');
+        let dt = JSON.parse(userData);
+        let accessToken = dt["accessToken"];
+        console.log(`accessToken: ${accessToken}` )
+        
+              const result = await api.get(GET_ORDERS, {
+                headers: { 'Content-Type': 'application/json', 'x-access-token' : accessToken },
+                withCredentials: false,
+                })
+                console.log(`result : ${result.data}`);
+             setData(result.data);
+             setLoading(false);
 
-      const result = await api.get(GET_ORDERS, {
-        headers: { 'Content-Type': 'application/json', 'x-access-token' : accessToken },
-        withCredentials: false,
-        })
-        console.log(`result : ${result.data}`);
-     setData(result.data);
+      } catch(err) {
+        setLoading(false);
+        if (!err?.response) {
+          toast.error('No Server Response', {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "colored",
+        });
+        } else {
+          console.log(`error: ${err.response?.data['message']}`);
+          toast.error(err.response?.data['message'], {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "colored",
+        });
+        }
+      }
+
     })();
   }, []);
 
@@ -89,7 +113,9 @@ console.log(`accessToken: ${accessToken}` )
   return(
     <div>
 <NavBar tab={'orders'} />
-          <div className="mt-8 mx-8 flex flex-col">
+{loading && <div className='grid w-full h-full place-items-center mt-36'> <CircularProgress style={{'color': '#5B21B6'}}></CircularProgress></div>
+        }
+      {!loading &&     <div className="mt-8 mx-8 flex flex-col">
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -145,7 +171,7 @@ console.log(`accessToken: ${accessToken}` )
           </div>
         </div>
     
-      </div>
+      </div>}
       </div>
 
   );

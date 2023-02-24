@@ -10,13 +10,10 @@ function classNames(...classes) {
 }
 
 
-export default function NavBar({tab}) {
+export default function AdminNavBar() {
     let navigate = useNavigate();
     const navigation = [
-        //   { name: 'Dashboard', href: '/dashboard', current: true },
-          { name: 'Orders', href: '/orders', current:tab==='orders' ? true : false },
-          { name: 'Wallet', href: '/wallet', current: tab==='wallet' ? true : false },
-          { name: 'API Key', href: '/apikey', current: tab==='apikey' ? true : false },
+          { name: 'Admin Panel', href: '/adminpanel', current:true },
         ]
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -84,7 +81,7 @@ export default function NavBar({tab}) {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
+                      {/* <Menu.Item>
                         {({ active }) => (
                           <a
                             href="/profile"
@@ -93,7 +90,7 @@ export default function NavBar({tab}) {
                             Your Profile
                           </a>
                         )}
-                      </Menu.Item>
+                      </Menu.Item> */}
                       {/* <Menu.Item>
                         {({ active }) => (
                           <a

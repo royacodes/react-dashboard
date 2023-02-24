@@ -1,7 +1,13 @@
 import { useStepperContext } from "../contexts/StepperContext";
 
-export default function Details() {
+export default function Details({onSubmit}) {
   const { userData, setUserData } = useStepperContext();
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(userData);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -12,49 +18,60 @@ export default function Details() {
   };
   return (
     <div className="flex flex-col ">
-      <div className="w-full mx-2 flex-1">
-        <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
-          First name
-        </div>
-        <div className="bg-white my-2 p-1 flex border border-gray-200 rounded">
-          <input
-            onChange={handleChange}
-            value={userData["firstName"] || ""}
-            name="firstName"
-            placeholder="First name"
-            className="p-1 px-2 appearance-none outline-none w-full text-gray-800"
-          />
-        </div>
-      </div>
-      <div className="w-full mx-2 flex-1">
-        <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
-          Last name
-        </div>
-        <div className="bg-white my-2 p-1 flex border border-gray-200 rounded">
-          <input
-            onChange={handleChange}
-            value={userData["lastName"] || ""}
-            name="lastName"
-            placeholder="Last name"
-            className="p-1 px-2 appearance-none outline-none w-full text-gray-800"
-          />
-        </div>
-      </div>
-      <div className="w-full mx-2 flex-1">
-        <div className="font-bold h-6 mt-3 text-gray-500 text-xs leading-8 uppercase">
-          Phone number
-        </div>
-        <div className="bg-white my-2 p-1 flex border border-gray-200 rounded">
-          <input
-            onChange={handleChange}
-            value={userData["phoneNumber"] || ""}
-            name="phoneNumber"
-            placeholder="Phone number"
-            type="text"
-            className="p-1 px-2 appearance-none outline-none w-full text-gray-800"
-          />
-        </div>
-      </div>
+
+      <form className="mt-0 space-y-6 mx-0" onSubmit={handleSubmit}>
+      <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" for="firstName">
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  // ref={userRef} 
+                  autoComplete="off"
+                  onChange={handleChange}
+                  value={userData["firstName"] || ""}
+                  required
+                  className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter your first name"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" for="lastName">
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  // ref={userRef} 
+                  autoComplete="off"
+                  onChange={handleChange}
+                  value={userData["lastName"] || ""}
+                  required
+                  className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter your last name"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" for="phoneNumber">
+                  Phone Number
+                </label>
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
+                  // ref={userRef} 
+                  autoComplete="off"
+                  onChange={handleChange}
+                  value={userData["phoneNumber"] || ""}
+                  required
+                  className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  placeholder="09*********"
+                />
+              </div>
+      </form>
     </div>
   );
 }

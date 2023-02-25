@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import api from '../api/authapi';
 const LOGIN_URL = '/auth/signin';
+const PROFILE_URL = '/user/getUserProfile';
 
 
  export default function Login() {
@@ -31,7 +32,10 @@ const LOGIN_URL = '/auth/signin';
 	const [username, setUserName] = useState('');
 	const [password, setPassword] = useState('');
 	const [errMsg, setErrMsg] = useState('');
-	const [success, setSuccess] = useState(false);
+	const [adminSuccess, setAdminSuccess] = useState(false);
+  const [userSuccess, setUserSuccess] = useState(false);
+	const [moderateSuccess, setModerateSuccess] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
 
@@ -70,12 +74,21 @@ const LOGIN_URL = '/auth/signin';
 
 			const accessToken = response?.data?.accessToken;
 			const roles = response?.data?.roles;
+      console.log(`roles: ${roles}`);
+      
       localStorage.setItem('loginData', JSON.stringify(response.data));
 			setAuth({ username, password, roles, accessToken });
 			setUserName('');
 			setPassword('');
       setLoading(false);
-			setSuccess(true);
+      if(roles[0] === 'ROLE_USER') {
+        setUserSuccess(true);
+      } else if(roles[0] === 'ROLE_MODERATOR'){
+        setModerateSuccess(true);
+        
+      } else if(roles[0] === 'ROLE_ADMIN') {
+        setAdminSuccess(true)
+      }
 		} catch (err) {
       setLoading(false);
 			if (!err?.response) {
@@ -96,8 +109,12 @@ const LOGIN_URL = '/auth/signin';
 		}
 	};
 
-  if(success) {
+  if(userSuccess) {
+    navigate('/login');
+  } else if(moderateSuccess) {
     navigate(appPath.DASHBOARD);
+  }else if(adminSuccess) {
+    navigate('/admin');
   }
 
   return (

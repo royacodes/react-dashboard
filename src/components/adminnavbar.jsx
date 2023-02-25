@@ -13,7 +13,7 @@ function classNames(...classes) {
 export default function AdminNavBar() {
     let navigate = useNavigate();
     const navigation = [
-          { name: 'Admin Panel', href: '/adminpanel', current:true },
+          { name: 'Admin Panel', href: '/admin', current:true },
         ]
   return (
     <Disclosure as="nav" className="bg-gray-800">

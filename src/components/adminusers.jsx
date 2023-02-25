@@ -52,46 +52,59 @@ export default function AdminUsers() {
 
   const columns = useMemo(
     () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        // Cell method will provide the value of the cell; we can create a custom element for the Cell        
+        // Cell: ({ cell: { value } }) => {
+        //   const hour = Math.floor(value / 60);
+        //   const min = Math.floor(value % 60);
+        //   return (
+        //     <>
+        //       {hour > 0 ? `${hour} hr${hour > 1 ? "s" : ""} ` : ""}
+        //       {min > 0 ? `${min} min${min > 1 ? "s" : ""}` : ""}
+        //     </>
+        //   );
+        // }
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName"
+      },
           {
-            Header: "Order ID",
-            accessor: "orderId"
+            Header: "Username",
+            accessor: "username"
+          },
+          {
+            Header: "Email",
+            accessor: "email"
           },
           {
             Header: "Store",
-            accessor: "storeName"
-          },
-          {
-            Header: "Price",
-            accessor: "price",
+            accessor: "storeName",
             // Cell method will provide the cell value; we pass it to render a custom component
             // Cell: ({ cell: { value } }) => <Genres values={value} />
           },
+         
           {
-            Header: "Transaction Hash",
-            accessor: "transactionHash",
-            // Cell method will provide the value of the cell; we can create a custom element for the Cell        
-            // Cell: ({ cell: { value } }) => {
-            //   const hour = Math.floor(value / 60);
-            //   const min = Math.floor(value % 60);
-            //   return (
-            //     <>
-            //       {hour > 0 ? `${hour} hr${hour > 1 ? "s" : ""} ` : ""}
-            //       {min > 0 ? `${min} min${min > 1 ? "s" : ""}` : ""}
-            //     </>
-            //   );
-            // }
+            Header: "Phone",
+            accessor: "phoneNumber"
           },
           {
-            Header: "Date",
-            accessor: "updatedAt"
+            Header: "Balance",
+            accessor: "orderPriceSum"
           },
           {
-            Header: "Confirmation Status",
-            accessor: "isTransferedToMain"
-          },
-          {
-            Header: "Withdrawal Status",
-            accessor: "isTransferedToMerchant"
+            Header: "Activation",
+            accessor: "acceptedByAdmin",
+            Cell: ({ cell: { value } }) => {
+              return (
+                <>
+                  {value ? "true" : "false"}
+                </>
+              );
+            }
+
           },
         ],
     []

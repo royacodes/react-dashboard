@@ -1,9 +1,17 @@
-import { Navbar } from "@material-tailwind/react";
-import React from "react";
+import React, {useState} from "react";
 import ProfileImage from '../assets/defaultimage.jpg';
 import NavBar from './navbar';
+import api from '../api/authapi';
+const PROFILE_URL = '/user/getUserProfile';
 
 export default function Profile() {
+  const [accepted, setAccepted] = useState(false);
+	const [verified, setVerified] = useState(false);
+	const [balance, setBalance] = useState('');
+	const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+
     return(
         <main className="profile-page bg-gray-100">
         <section className="relative block bg-gray-100" style={{ height: "500px" }}>
@@ -38,6 +46,24 @@ export default function Profile() {
                   </div>
                   <div className="w-full lg:w-4/12 px-4 lg:order-1">
                     <div className="flex justify-center py-4 lg:pt-4 pt-8">
+                    <div className="mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
+                          22
+                        </span>
+                        <span className="text-sm text-gray-500">Accepted</span>
+                      </div>
+                      <div className="mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
+                          10
+                        </span>
+                        <span className="text-sm text-gray-500">Verified</span>
+                      </div>
+                      <div className="lg:mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-gray-700">
+                          89
+                        </span>
+                        <span className="text-sm text-gray-500">Balance</span>
+                      </div>
                     </div>
                   </div>
                 </div>

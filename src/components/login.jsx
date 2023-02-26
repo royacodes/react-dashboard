@@ -18,7 +18,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import api from '../api/authapi';
 const LOGIN_URL = '/auth/signin';
-const PROFILE_URL = '/user/getUserProfile';
 
 
  export default function Login() {
@@ -35,11 +34,9 @@ const PROFILE_URL = '/user/getUserProfile';
 	const [adminSuccess, setAdminSuccess] = useState(false);
   const [userSuccess, setUserSuccess] = useState(false);
 	const [moderateSuccess, setModerateSuccess] = useState(false);
+  const [userAccessToken, setUserAccessToken] = useState('');
 
   const [loading, setLoading] = useState(false);
-
-
-
 
   const defaultOptions = {
     loop: true,
@@ -73,6 +70,7 @@ const PROFILE_URL = '/user/getUserProfile';
 			);
 
 			const accessToken = response?.data?.accessToken;
+      setUserAccessToken(accessToken);
 			const roles = response?.data?.roles;
       console.log(`roles: ${roles}`);
       

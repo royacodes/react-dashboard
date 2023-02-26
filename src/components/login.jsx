@@ -110,7 +110,7 @@ const PROFILE_URL = '/user/getUserProfile';
 	};
 
   if(userSuccess) {
-    navigate('/login');
+    navigate('/notverified')
   } else if(moderateSuccess) {
     navigate(appPath.DASHBOARD);
   }else if(adminSuccess) {
@@ -119,9 +119,9 @@ const PROFILE_URL = '/user/getUserProfile';
 
   return (
     <>
-       <div className='bg-white grid grid-cols-1 sm:grid-cols-2 h-screen w-full'>
+       <div className='bg-white my-auto grid grid-cols-1 sm:grid-cols-2 h-screen w-full'>
        <div className='hidden sm:block flex md:inline-flex'>
-        <div className='bg-red-300 hidden sm:block'>
+        <div className='bg-transparent hidden sm:block'>
         <Lottie className='object-none object-center'
           options={defaultOptions}/>
         </div>

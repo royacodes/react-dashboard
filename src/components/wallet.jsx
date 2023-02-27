@@ -15,6 +15,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import UserLineChart from './userlinechart';
 
 const GET_WITHDRAWS = '/user/merchant/getAllWithdrawTransactionsHistoryForThisUser';
 
@@ -46,12 +47,12 @@ export default function Wallet() {
 
   useEffect(() => {
     (async () => {
-      
+
       try {
         let userData = localStorage.getItem('loginData');
-      let dt = JSON.parse(userData);
-      let accessToken = dt["accessToken"];
-      console.log(`accessToken: ${accessToken}`)
+        let dt = JSON.parse(userData);
+        let accessToken = dt["accessToken"];
+        console.log(`accessToken: ${accessToken}`)
         const result = await api.get(GET_WITHDRAWS, {
           headers: { 'Content-Type': 'application/json', 'x-access-token': accessToken },
           withCredentials: false,
@@ -59,19 +60,19 @@ export default function Wallet() {
         console.log(`result : ${result.data}`);
         setData(result.data);
         setLoading(false);
-      } catch(err) {
+      } catch (err) {
         setLoading(false);
         if (!err?.response) {
           toast.error('No Server Response', {
             position: toast.POSITION.TOP_RIGHT,
             theme: "colored",
-        });
+          });
         } else {
           console.log(`error: ${err.response?.data['message']}`);
           toast.error(err.response?.data['message'], {
             position: toast.POSITION.TOP_RIGHT,
             theme: "colored",
-        });
+          });
         }
       }
     })();
@@ -103,6 +104,17 @@ export default function Wallet() {
     ],
     []
   );
+  const labels = ["January", "February", "March", "April", "May", "June"];
+
+  const info = {
+    chartData: {
+      labels: labels,
+      data:
+        [0, 10, 5, 2, 20, 30, 45]
+      ,
+    },
+  };
+
   const {
     getTableProps, // table props from react-table
     getTableBodyProps, // table body props from react-table
@@ -118,13 +130,14 @@ export default function Wallet() {
       <NavBar tab={'wallet'} />
       <div className="mt-24">
         <div className="flex flex-wrap lg:flex-nowrap justify-center lg:space-x-16">
-
+          {/* CHART */}
+          <UserLineChart info={info} />
           {/* BALANCE */}
           <div className="max-w-sm w-50 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Balance </h5>
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">124,000   USDT</p>
             <button
-            onClick={handleClickOpen}
+              onClick={handleClickOpen}
               className="group relative flex w-40 justify-center rounded-md border border-transparent bg-violet-700 py-2 px-4 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -134,27 +147,27 @@ export default function Wallet() {
             </button>
             {/* DIALOG */}
             <Dialog
-        open={open}
-        onClose={handleClose}
-        fullWidth={true}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Withdraw"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          Are you sure you want to withdraw all USDT?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>No</Button>
-          <Button onClick={handleClose} autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+              open={open}
+              onClose={handleClose}
+              fullWidth={true}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Withdraw"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to withdraw all USDT?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>No</Button>
+                <Button onClick={handleClose} autoFocus>
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
 
           {/* WALLET */}
@@ -162,7 +175,7 @@ export default function Wallet() {
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Wallet Address</h5>
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">ksldkaNfalnflkanfncsnfcsjlNkcsdknknacd</p>
             <button
-            onClick={handleWalletClickOpen}
+              onClick={handleWalletClickOpen}
               className="group relative flex w-40 justify-center rounded-md border border-transparent bg-violet-700 py-2 px-4 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               <span className=" absolute inset-y-0 left-0 flex items-center pl-3">
@@ -173,27 +186,27 @@ export default function Wallet() {
 
             {/* WALLET DIALOG */}
             <Dialog open={walletOpen} onClose={handleWalletClose} fullWidth={true}
->
-        <DialogTitle>Wallet Address</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Enter your wallet address
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="wallet_address"
-            label="Wallet Address"
-            type="text"
-            fullWidth
-            variant="filled"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleWalletClose}>Cancel</Button>
-          <Button onClick={handleWalletClose}>Confirm</Button>
-        </DialogActions>
-      </Dialog>
+            >
+              <DialogTitle>Wallet Address</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Enter your wallet address
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="wallet_address"
+                  label="Wallet Address"
+                  type="text"
+                  fullWidth
+                  variant="filled"
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleWalletClose}>Cancel</Button>
+                <Button onClick={handleWalletClose}>Confirm</Button>
+              </DialogActions>
+            </Dialog>
           </div>
 
 
@@ -201,7 +214,7 @@ export default function Wallet() {
 
         {/* TABLE */}
 
-        {loading && <div className='grid w-full h-full place-items-center mt-16'> <CircularProgress style={{'color': '#5B21B6'}}></CircularProgress></div>
+        {loading && <div className='grid w-full h-full place-items-center mt-16'> <CircularProgress style={{ 'color': '#5B21B6' }}></CircularProgress></div>
         }
         {!loading && <div className="mt-8 lg:mx-56 mx-8 flex flex-col">
           <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
@@ -260,7 +273,7 @@ export default function Wallet() {
           </div>
         </div>}
 
-        
+
       </div>
       <ToastContainer />
     </div>

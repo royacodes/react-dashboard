@@ -1,37 +1,24 @@
 
 import { MdEmail } from 'react-icons/md';
-import Wizard from './wizard';
 import Lottie from 'react-lottie';
 import { CircularProgress } from '@mui/material';
 
 import animationData from '../assets/coin.json'
-import { useNavigate } from "react-router-dom";
 
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import AuthContext from './contexts/authprovider';
-import * as appPath from '../core/path';
-import appLogo from '../assets/applogo.png';
 
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import api from '../api/authapi';
-const LOGIN_URL = '/auth/signin';
+const FORGOT_PASS_URL = '/auth/forgotpassword';
 
 
 export default function ForgotPassword() {
 
-    let navigate = useNavigate();
 
-    const { setAuth } = useContext(AuthContext);
-    const userRef = useRef();
-    const errRef = useRef();
-
-    const [username, setUserName] = useState('');
-    const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
 
 
@@ -46,12 +33,6 @@ export default function ForgotPassword() {
         }
     };
 
-    useEffect(() => {
-        userRef.current.focus();
-    }, []);
-
-    useEffect(() => {
-    }, [username, password]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,22 +40,20 @@ export default function ForgotPassword() {
 
         try {
             const response = await api.post(
-                LOGIN_URL,
-                JSON.stringify({ username, password }),
+                FORGOT_PASS_URL,
+                JSON.stringify({ email }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: false,
                 }
             );
-
-            const accessToken = response?.data?.accessToken;
-            const roles = response?.data?.roles;
-            localStorage.setItem('loginData', JSON.stringify(response.data));
-            setAuth({ username, password, roles, accessToken });
-            setUserName('');
-            setPassword('');
+            setEmail('');
             setLoading(false);
-            setSuccess(true);
+            toast.success(response?.data['message'], {
+                position: toast.POSITION.TOP_RIGHT,
+                theme: "colored",
+            });
+
         } catch (err) {
             setLoading(false);
             if (!err?.response) {
@@ -83,25 +62,19 @@ export default function ForgotPassword() {
                     theme: "colored",
                 });
             } else {
-                console.log(`error: ${err.response?.data['message']}`);
                 toast.error(err.response?.data['message'], {
                     position: toast.POSITION.TOP_RIGHT,
                     theme: "colored",
                 });
             }
-            errRef.current.focus();
         }
     };
-
-    if (success) {
-        navigate(appPath.LOGIN);
-    }
 
     return (
         <>
             <div className='bg-white grid grid-cols-1 sm:grid-cols-2 h-screen w-full'>
                 <div className='hidden sm:block flex md:inline-flex'>
-                    <div className='bg-red-300 hidden sm:block'>
+                    <div className='bg-white hidden sm:block'>
                         <Lottie className='object-none object-center'
                             options={defaultOptions} />
                     </div>
@@ -126,7 +99,6 @@ export default function ForgotPassword() {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    ref={userRef}
                                     autoComplete="off"
                                     onChange={(e) => setEmail(e.target.value)}
                                     value={email}
@@ -140,7 +112,7 @@ export default function ForgotPassword() {
 
                         <div className="flex items-center justify-between">
                             <div className="text-sm">
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
                                     Remember your password?
                                 </a>
                             </div>
@@ -164,7 +136,7 @@ export default function ForgotPassword() {
                     </form>
                 </div>
 
-                <ToastContainer />
+                <ToastContainer style={{ width: "34vw" }} />
 
             </div>
         </>

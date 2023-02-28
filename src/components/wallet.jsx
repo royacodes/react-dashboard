@@ -8,16 +8,13 @@ import api from '../api/authapi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CircularProgress } from '@mui/material';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { BsCalendar2DateFill } from 'react-icons/bs'
+import { BiTimeFive } from 'react-icons/bi'
+import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import UserLineChart from './userlinechart';
 
 const GET_WITHDRAWS = '/user/merchant/getAllWithdrawTransactionsHistoryForThisUser';
+const PROFILE_URL = '/user/getUserProfile';
 
 
 export default function Wallet() {
@@ -26,6 +23,11 @@ export default function Wallet() {
   const [loading, setLoading] = useState(true);
 
   const [open, setOpen] = React.useState(false);
+
+  const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [balance, setBalance] = useState(0);
+  const [walletAddress, setWalletAddress] = useState('');
+  let newArray = [];
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -57,11 +59,25 @@ export default function Wallet() {
           headers: { 'Content-Type': 'application/json', 'x-access-token': accessToken },
           withCredentials: false,
         })
-        console.log(`result : ${result.data}`);
+        console.log(`result : ${result.data[0].updatedAt}`);
         setData(result.data);
+        
+       newArray = [...chartData];
+        result.data.map((item) => {
+          
+          const d = new Date(item.updatedAt);
+          console.log(`date m: ${d}`);
+          const month = d.getMonth();
+          newArray[month] = newArray[month] + item.amount;
+          console.log(`month m: ${month}`);
+
+        });
+        setChartData(newArray);
+        console.log(`new array ${chartData}   ${newArray}`);
         setLoading(false);
       } catch (err) {
         setLoading(false);
+        console.log(err);
         if (!err?.response) {
           toast.error('No Server Response', {
             position: toast.POSITION.TOP_RIGHT,
@@ -78,12 +94,56 @@ export default function Wallet() {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+        let userData = localStorage.getItem('loginData');
+        let dt = JSON.parse(userData);
+        try{
+            const result = await api.get(PROFILE_URL, {
+              headers: { 'Content-Type': 'application/json', 'x-access-token': dt["accessToken"] },
+              withCredentials: false,
+            });
+            setWalletAddress(result.data.user.walletAddress);
+            setBalance(result.data.user.orderPriceSum)
+
+          } catch(err) {
+            setLoading(false);
+            if (!err?.response) {
+              toast.error('No Server Response', {
+                position: toast.POSITION.TOP_RIGHT,
+                theme: "colored",
+            });
+            } else {
+              console.log(`error: ${err.response?.data['message']}`);
+              toast.error(err.response?.data['message'], {
+                position: toast.POSITION.TOP_RIGHT,
+                theme: "colored",
+            });
+            }
+          }
+    })();
+}, []);
+
 
   const columns = useMemo(
     () => [
       {
         Header: "Date",
-        accessor: "updatedAt"
+        accessor: "updatedAt",
+        Cell: (props) => {
+          const date = new Date(props.row.original.updatedAt);
+          return (
+            <>
+              <div className='flex items-center justify-center text-sm text-gray-500'>
+                <BsCalendar2DateFill color='#0F766E' className='mr-1' />
+                {date.getFullYear()}-{date.getMonth() + 1}-{date.getDate()}
+                <BiTimeFive color='#0F766E' className='mx-1' />
+                {date.getHours()}:{date.getMinutes()}
+
+              </div>
+            </>
+          );
+        }
       },
       {
         Header: "Amount",
@@ -92,25 +152,70 @@ export default function Wallet() {
       {
         Header: "Transaction Hash",
         accessor: "transactionHash",
+        Cell: (props) => {
+          return (
+            <>
+              <div className='flex items-center justify-center text-sm text-gray-500'>
+                <a href={`https://tronscan.org/#/transaction/${props.row.original.transactionHash}`} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  {props.row.original.transactionHash}
+                </a>
+              </div>
+            </>
+          );
+        }
       },
       {
         Header: "Payment Status",
-        accessor: "isPaid"
+        accessor: "isPaid",
+        Cell: (props) => {
+          return (
+            <>
+              {props.row.original.isPaid &&
+                <div className='flex rounded-full bg-indigo-100 text-indigo-700 py-2 px-2 items-center justify-center text-sm text-gray-500'>
+                  Paid
+                </div>
+              }
+
+              {!(props.row.original.isPaid) &&
+                <div className='flex rounded-full bg-purple-100 text-purple-700 py-2 px-2 items-center justify-center text-sm text-gray-500'>
+                  Not paid
+                </div>
+              }
+            </>
+          );
+        }
       },
       {
         Header: "Confirmation Status",
-        accessor: "isConfirmed"
+        accessor: "isConfirmed",
+        Cell: (props) => {
+          return (
+            <>
+              {props.row.original.isConfirmed &&
+                <div className='flex rounded-full bg-green-100 py-2 px-2 items-center justify-center text-sm text-gray-500'>
+                  Confirmed
+                </div>
+              }
+
+              {!(props.row.original.isConfirmed) &&
+                <div className='flex rounded-full bg-red-100 py-2 px-2 items-center justify-center text-sm text-gray-500'>
+                  Not confirmed
+                </div>
+              }
+            </>
+          );
+        }
       },
     ],
     []
   );
-  const labels = ["January", "February", "March", "April", "May", "June"];
+  const labels = ["January", "February", "March", "April", "May", "June", "July", 'August', "September", "October", "November", "December" ];
 
   const info = {
     chartData: {
       labels: labels,
       data:
-        [0, 10, 5, 2, 20, 30, 45]
+        chartData
       ,
     },
   };
@@ -131,83 +236,9 @@ export default function Wallet() {
       <div className="mt-24">
         <div className="flex flex-wrap lg:flex-nowrap justify-center lg:space-x-16">
           {/* CHART */}
-          <UserLineChart info={info} />
-          {/* BALANCE */}
-          <div className="max-w-sm w-50 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Balance </h5>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">124,000   USDT</p>
-            <button
-              onClick={handleClickOpen}
-              className="group relative flex w-40 justify-center rounded-md border border-transparent bg-violet-700 py-2 px-4 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <BiCoinStack className="h-5 w-5 text-violet-300 group-hover:text-violet-500" aria-hidden="true" />
-              </span>
-              Withdraw
-            </button>
-            {/* DIALOG */}
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              fullWidth={true}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {"Withdraw"}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  Are you sure you want to withdraw all USDT?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>No</Button>
-                <Button onClick={handleClose} autoFocus>
-                  Yes
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
+          <UserLineChart info={info} balance={balance} walletAddress={walletAddress} />
+     
 
-          {/* WALLET */}
-          <div className="max-w-sm w-50 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Wallet Address</h5>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">ksldkaNfalnflkanfncsnfcsjlNkcsdknknacd</p>
-            <button
-              onClick={handleWalletClickOpen}
-              className="group relative flex w-40 justify-center rounded-md border border-transparent bg-violet-700 py-2 px-4 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              <span className=" absolute inset-y-0 left-0 flex items-center pl-3">
-                <FaWallet className=" h-4 w-4 text-violet-300 group-hover:text-violet-500" aria-hidden="true" />
-              </span>
-              Edit Address
-            </button>
-
-            {/* WALLET DIALOG */}
-            <Dialog open={walletOpen} onClose={handleWalletClose} fullWidth={true}
-            >
-              <DialogTitle>Wallet Address</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Enter your wallet address
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="wallet_address"
-                  label="Wallet Address"
-                  type="text"
-                  fullWidth
-                  variant="filled"
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleWalletClose}>Cancel</Button>
-                <Button onClick={handleWalletClose}>Confirm</Button>
-              </DialogActions>
-            </Dialog>
-          </div>
 
 
         </div>
@@ -216,12 +247,12 @@ export default function Wallet() {
 
         {loading && <div className='grid w-full h-full place-items-center mt-16'> <CircularProgress style={{ 'color': '#5B21B6' }}></CircularProgress></div>
         }
-        {!loading && <div className="mt-8 lg:mx-56 mx-8 flex flex-col">
+        {!loading && <div className="mt-8 mx-8 lg:mx-8 flex flex-col">
           <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-violet-50">
                     {headerGroups.map(headerGroup => (
                       <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
@@ -232,7 +263,7 @@ export default function Wallet() {
                             className="group px-6 py-3 text-left text-sm font-medium text-gray-500 tracking-wider"
                             {...column.getHeaderProps()}
                           >
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-center">
                               {column.render('Header')}
                               {/* Add a sort direction indicator */}
                             </div>
@@ -257,7 +288,7 @@ export default function Wallet() {
                                 role="cell"
                               >
                                 {cell.column.Cell.name === "defaultRenderer"
-                                  ? <div className="text-sm text-gray-500">{cell.render('Cell')}</div>
+                                  ? <div className="flex items-center justify-center text-sm text-gray-500">{cell.render('Cell')}</div>
                                   : cell.render('Cell')
                                 }
                               </td>

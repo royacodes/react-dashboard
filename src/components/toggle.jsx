@@ -6,27 +6,37 @@ import { CircularProgress } from '@mui/material';
 
 const ACTIVATE_USER = '/user/admin/acceptmerchant';
 
-export default function Toggle({ value, email }) {
-    const [enabled, setEnabled] = useState(value);
+export default function Toggle({ value, email}) {
+    const [activation, setActivation] = useState(value);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState();
     const handleSwitch = async () => {
         try {
+           
             let userData = localStorage.getItem('loginData');
             let dt = JSON.parse(userData);
             let accessToken = dt["accessToken"];
             const result = await api.post(ACTIVATE_USER,
-                JSON.stringify({ email }),
+                JSON.stringify({ email, "activation" : !activation }),
                 {
                     headers: { 'Content-Type': 'application/json', 'x-access-token': accessToken },
                     withCredentials: false,
                 })
+
             setData(result.data);
-            setEnabled(!enabled);
-            toast.success('User has been activated successfully.', {
-                position: toast.POSITION.TOP_RIGHT,
-                theme: "colored",
-            });
+            setActivation(result.data.user.acceptedByAdmin);
+            if(result.data.user.acceptedByAdmin) {
+                toast.success('User has been activated successfully.', {
+                    position: toast.POSITION.TOP_RIGHT,
+                    theme: "colored",
+                });
+            } else {
+                toast.success('User has been deactivated successfully.', {
+                    position: toast.POSITION.TOP_RIGHT,
+                    theme: "colored",
+                });
+            }
+         
             setLoading(false);
 
         } catch (err) {
@@ -38,7 +48,6 @@ export default function Toggle({ value, email }) {
                     className: 'Toastify__toast--error'
                 });
             } else {
-                console.log(`error: ${err.response?.data['message']}`);
                 toast.error(err.response?.data['message'], {
                     position: toast.POSITION.TOP_RIGHT,
                     theme: "colored",
@@ -55,15 +64,13 @@ export default function Toggle({ value, email }) {
                     <input
                         type="checkbox"
                         className="sr-only peer"
-                        checked={enabled}
+                        checked={activation}
                         readOnly
                     />
                     <div
-                        onClick={() => {
-                            console.log(`onSwitch ${enabled}`)
-                            console.log(`user email toggle: ${email}`);
-
+                        onClick={async () => {
                             setLoading(true);
+                            
                             handleSwitch();
                         }}
                         className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-green-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"

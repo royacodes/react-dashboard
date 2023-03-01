@@ -38,7 +38,7 @@ export default function Wizard() {
 
         let userData = localStorage.getItem('registerData');
           let data = JSON.parse(userData);
-          console.log(`user data: ${data["email"]}`)
+          console.log(`user data: ${userData}`)
           let email = data["email"];
           let username = data["username"]
           let firstName = data["firstName"]
@@ -51,7 +51,7 @@ export default function Wizard() {
           let storeName = data["storeName"]
           let gender = 'Female'
           // let description = data["description"]
-          console.log(`json: ${JSON.stringify({ username,email, password, firstName, lastName, phoneNumber, storeName, gender })}`)
+          console.log(`jsont: ${JSON.stringify({ username,email, password, firstName, lastName, phoneNumber, storeName, gender })}`)
           if(!username || username === "") {
             setError(true);
             toast.info('Enter your username in first step', {
@@ -115,7 +115,7 @@ export default function Wizard() {
               theme: "colored",
           });
           }
-          if(error) {
+          if(!error) {
               try {
                 setLoading(true);
                 const response = await api.post(

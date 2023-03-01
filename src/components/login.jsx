@@ -110,7 +110,7 @@ const LOGIN_URL = '/auth/signin';
   if(userSuccess) {
     navigate('/notverified')
   } else if(moderateSuccess) {
-    navigate(appPath.DASHBOARD);
+    navigate('/orders');
   }else if(adminSuccess) {
     navigate('/admin');
   }

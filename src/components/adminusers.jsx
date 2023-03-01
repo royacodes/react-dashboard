@@ -39,7 +39,6 @@ export default function AdminUsers() {
         let userData = localStorage.getItem('loginData');
         let dt = JSON.parse(userData);
         let accessToken = dt["accessToken"];
-        console.log(`accessToken: ${accessToken}`)
         const result = await api.get(GET_Users, {
           headers: { 'Content-Type': 'application/json', 'x-access-token': accessToken },
           withCredentials: false,
@@ -55,7 +54,6 @@ export default function AdminUsers() {
             theme: "colored",
           });
         } else {
-          console.log(`error: ${err.response?.data['message']}`);
           toast.error(err.response?.data['message'], {
             position: toast.POSITION.TOP_RIGHT,
             theme: "colored",
@@ -132,8 +130,6 @@ export default function AdminUsers() {
         Header: "Activation",
         accessor: "acceptedByAdmin",
         Cell: (props) => {
-          console.log(`user email : ${props.row.original.email}`);
-          console.log(`user value : ${props.row.original.acceptedByAdmin}`);
           return (
             <>
               <div >

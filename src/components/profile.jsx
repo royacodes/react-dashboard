@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../api/authapi';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
+import { CircularProgress } from '@mui/material';
 
 const PROFILE_URL = '/user/getUserProfile';
 
@@ -41,6 +42,7 @@ export default function Profile() {
         setPhone(result.data.user.phoneNumber);
         setWalletAddress(result.data.user.walletAddress);
         setApiKey(result.data.user.apiKey);
+        setLoading(false);
 
       } catch (err) {
         setLoading(false);
@@ -64,7 +66,9 @@ export default function Profile() {
       <section className="relative block bg-gray-100" style={{ height: "500px" }}>
         <NavBar tab={'profile'} />
       </section>
-      <section className="relative py-16 bg-gray-100">
+      {loading && <div className='grid w-full h-full place-items-center mt-36'> <CircularProgress style={{ 'color': '#5B21B6' }}></CircularProgress></div>
+      }
+      {!loading && <section className="relative py-16 bg-gray-100">
         <div className="container mx-auto px-4">
           <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
             <div className="px-6">
@@ -152,7 +156,8 @@ export default function Profile() {
             </div>
           </div>
         </div>
-      </section>
+      </section> }
+      
       <ToastContainer style={{ width: "34vw" }} />
     </main>
   );

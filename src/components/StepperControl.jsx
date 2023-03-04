@@ -1,4 +1,8 @@
-export default function StepperControl({ handleClick, currentStep, steps }) {
+import { CircularProgress } from '@mui/material';
+
+
+
+export default function StepperControl({ handleClick, currentStep, steps, loading }) {
   return (
     <div className="container mt-4 mb-8 flex justify-around">
       <button
@@ -9,13 +13,14 @@ export default function StepperControl({ handleClick, currentStep, steps }) {
       >
         Previous
       </button>
-
-      <button
+      {loading && <CircularProgress style={{ 'color': '#5B21B6' }}></CircularProgress>}
+      {!loading &&  <button
         onClick={() => handleClick(currentStep === steps.length ? "submit" : "next")} 
         className="cursor-pointer w-40 rounded-xl bg-violet-700 py-2 px-4 font-semibold uppercase text-white transition duration-200 ease-in-out hover:bg-violet-900 hover:text-white"
       >
         {currentStep === steps.length ? "Submit" : "Next"}
-      </button>
+      </button>}
+     
     </div>
   );
 }

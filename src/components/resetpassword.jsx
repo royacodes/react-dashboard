@@ -11,13 +11,16 @@ import React, { useRef, useState, useEffect, useContext } from 'react';
 import AuthContext from './contexts/authprovider';
 import * as appPath from '../core/path';
 import appLogo from '../assets/applogo.png';
+import { useParams } from "react-router-dom";
+
+
 
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import api from '../api/authapi';
-const LOGIN_URL = '/auth/signin';
+const RESET_URL = '/auth/resetPassword/';
 
 
  export default function ResetPassword() {
@@ -32,6 +35,7 @@ const LOGIN_URL = '/auth/signin';
 	const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const params = useParams();
 
 
 
@@ -46,50 +50,58 @@ const LOGIN_URL = '/auth/signin';
 
   const handleSubmit = async (e) => {
 		e.preventDefault();
-    setLoading(true);
+    if(password === confPass) {
+      setLoading(true);
 
-		try {
-			const response = await api.post(
-				LOGIN_URL,
-				JSON.stringify({ password }),
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: false,
-				}
-			);
-
-			const accessToken = response?.data?.accessToken;
-			const roles = response?.data?.roles;
-     
-			setPassword('');
-      setLoading(false);
-			setSuccess(true);
-		} catch (err) {
-      setLoading(false);
-			if (!err?.response) {
-        toast.error('No Server Response', {
+      try {
+        const response = await api.post(
+          RESET_URL+params.passToken,
+          JSON.stringify({ password }),
+          {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: false,
+          }
+        );
+        toast.success(response.data.message, {
           position: toast.POSITION.TOP_RIGHT,
           theme: "colored",
       });
-			} else {
-        console.log(`error: ${err.response?.data['message']}`);
-        toast.error(err.response?.data['message'], {
-          position: toast.POSITION.TOP_RIGHT,
-          theme: "colored",
-      });
-			}
-		}
+        setPassword('');
+        setLoading(false);
+        setSuccess(true);
+      } catch (err) {
+        setLoading(false);
+        if (!err?.response) {
+          toast.error('No Server Response', {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "colored",
+        });
+        } else {
+          console.log(`error: ${err.response?.data['message']}`);
+          toast.error(err.response?.data['error'], {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "colored",
+        });
+        }
+      }
+    } else {
+      toast.error('Password do not match!', {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "colored",
+    });
+    }
+   
 	};
 
-  if(success) {
-    navigate(appPath.LOGIN);
-  }
+  // if(success) {
+  //   navigate(appPath.LOGIN);
+  // }
 
   return (
     <>
        <div className='bg-white grid grid-cols-1 sm:grid-cols-2 h-screen w-full'>
        <div className='hidden sm:block flex md:inline-flex'>
-        <div className='bg-red-300 hidden sm:block'>
+        <div className='bg-white hidden sm:block'>
         <Lottie className='object-none object-center'
           options={defaultOptions}/>
         </div>
@@ -139,10 +151,12 @@ const LOGIN_URL = '/auth/signin';
                 />
               </div>
             </div>
+            
             <div className='grid w-full place-items-center'>
               {loading && <CircularProgress style={{'color': '#5B21B6'}}></CircularProgress>}
               {!loading &&
               <button
+              disabled={success}
               type='submit'
                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-violet-700 py-2 px-4 text-sm font-medium text-white hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
@@ -154,6 +168,13 @@ const LOGIN_URL = '/auth/signin';
               }
               
             </div>
+            <div className="flex items-center justify-between">
+                            <div className="text-sm">
+                                <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    login
+                                </a>
+                            </div>
+                        </div>
           </form>
         </div>
 

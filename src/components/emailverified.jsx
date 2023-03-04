@@ -1,10 +1,64 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import EmailImage from '../assets/emailverified.png'
+import { useParams } from "react-router-dom";
+import { CircularProgress } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import api from '../api/authapi';
+const VERIFY_URL = '/verify-email/';
+
+
+
 
 export default function EmailVerified() {
+
+
+
+  const params = useParams();
+  const [loading, setLoading] =  useState(true);
+  const [success, setSuccess] = useState(false);
+
+
+
+  useEffect(() => {
+    (async () => {
+      if(!success) {
+        try {
+          const result = await api.get(VERIFY_URL+params.verifyToken, {
+            headers: { 'Content-Type': 'application/json',},
+            withCredentials: false,
+          })
+          setSuccess(true);
+          setLoading(false);
+    
+        } catch (err) {
+          setLoading(false);
+          if (!err?.response) {
+            toast.error('No Server Response', {
+              position: toast.POSITION.TOP_RIGHT,
+              theme: "colored",
+            });
+          } else {
+            console.log(`error: ${err.response?.data['message']}`);
+            toast.error(err.response?.data['message'], {
+              position: toast.POSITION.TOP_RIGHT,
+              theme: "colored",
+            });
+          }
+        }
+      } 
+    })();
+  }, []);
+
+
+
     return (
         <div>
-        <section className="relative block" style={{ height: "50vh" }}>
+      {loading && <div className='grid w-full h-full place-items-center mt-36'> <CircularProgress style={{ 'color': '#5B21B6' }}></CircularProgress></div>}
+      {!loading && <div className='grid w-full h-full place-items-center mt-36'></div>}
+          {success && <div>
+            <section className="relative block" style={{ height: "50vh" }}>
           <div
             className="absolute top-0 w-full h-full bg-center bg-cover"
             style={{
@@ -82,6 +136,8 @@ export default function EmailVerified() {
             </div>
           </div>
         </section>
+            </div>}
+            <ToastContainer style={{ width: "34vw" }} />
       </div>
     );
 }

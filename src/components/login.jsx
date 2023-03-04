@@ -80,7 +80,10 @@ const LOGIN_URL = '/auth/signin';
 			setPassword('');
       setLoading(false);
       if(roles[0] === 'ROLE_USER') {
-        setUserSuccess(true);
+        toast.error('Sorry, You are not accepted by Admin', {
+          position: toast.POSITION.TOP_RIGHT,
+          theme: "colored",
+      });
       } else if(roles[0] === 'ROLE_MODERATOR'){
         setModerateSuccess(true);
         
@@ -103,13 +106,11 @@ const LOGIN_URL = '/auth/signin';
       });
 				setErrMsg(err.response?.data['message']);
 			}
-			errRef.current.focus();
+			// errRef.current.focus();
 		}
 	};
 
-  if(userSuccess) {
-    navigate('/notverified')
-  } else if(moderateSuccess) {
+ if(moderateSuccess) {
     navigate('/orders');
   }else if(adminSuccess) {
     navigate('/admin');

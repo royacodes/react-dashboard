@@ -1,9 +1,13 @@
 import { useStepperContext } from "../contexts/StepperContext";
+import {useRef, useEffect} from 'react'
 
 export default function Account({onSubmit}) {
   const { userData, setUserData } = useStepperContext();
+	const userRef = useRef();
 
-
+  useEffect(() => {
+		userRef.current.focus();
+	}, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(userData);
@@ -17,7 +21,7 @@ export default function Account({onSubmit}) {
 
   return (
     <div className="flex flex-col ">
-      <form className="mt-0 space-y-6 mx-0" onSubmit={handleSubmit}>
+      <form className="mt-0 space-y-6 mx-0" action='#' method='POST' onSubmit={handleSubmit}>
       <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2" for="username">
                   Username
@@ -26,7 +30,7 @@ export default function Account({onSubmit}) {
                   id="username"
                   name="username"
                   type="text"
-                  // ref={userRef} 
+                  ref={userRef} 
                   autoComplete="off"
                   onChange={handleChange}
                   value={userData["username"] || ""}
@@ -43,7 +47,7 @@ export default function Account({onSubmit}) {
                   id="email"
                   name="email"
                   type="text"
-                  // ref={userRef} 
+                  ref={userRef} 
                   autoComplete="off"
                   onChange={handleChange}
                   value={userData["email"] || ""}
@@ -60,7 +64,7 @@ export default function Account({onSubmit}) {
                   id="password"
                   name="password"
                   type="password"
-                  // ref={userRef} 
+                  ref={userRef} 
                   autoComplete="off"
                   onChange={handleChange}
                   value={userData["password"] || ""}
@@ -77,7 +81,7 @@ export default function Account({onSubmit}) {
                   id="confirmpassword"
                   name="confirmpassword"
                   type="password"
-                  // ref={userRef} 
+                  ref={userRef} 
                   autoComplete="off"
                   onChange={handleChange}
                   value={userData["confirmpassword"] || ""}

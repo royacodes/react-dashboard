@@ -120,7 +120,7 @@ export default function Wallet() {
   const [userWalletAddress, setuserWalletAddress] = useState('');
   const [accessToken, setAccessToken] = useState('');
 
-  let newArray = [];
+  let newArray = [0,0,0,0,0,0,0,0,0,0,0,0];
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -206,8 +206,8 @@ export default function Wallet() {
   }
 
   useEffect(() => {
+    console.log(`i fire once`); 
     (async () => {
-
       try {
         let userData = localStorage.getItem('loginData');
         let dt = JSON.parse(userData);
@@ -216,11 +216,8 @@ export default function Wallet() {
           headers: { 'Content-Type': 'application/json', 'x-access-token': dt["accessToken"] },
           withCredentials: false,
         })
-        console.log(`result : ${result.data[0].updatedAt}`);
-        setData(result.data);
-
-        newArray = [...chartData];
-        result.data.map((item) => {
+        newArray = [0,0,0,0,0,0,0,0,0,0,0,0];
+         result.data.map((item) => {
 
           const d = new Date(item.updatedAt);
           console.log(`date m: ${d}`);
@@ -230,6 +227,7 @@ export default function Wallet() {
 
         });
         setChartData(newArray);
+        
         console.log(`new array ${chartData}   ${newArray}`);
         setLoading(false);
       } catch (err) {
@@ -414,7 +412,7 @@ export default function Wallet() {
                   Please notice that the minimum withdrawal amount is 100 USDT.
                   You easily can send your balance to the wallet address identified by you.
                 </p>
-                <div class="flex w-full items-center justify-between absolute bottom-0 p-6">
+                <div class="flex w-full items-center justify-between p-6">
                   <p class="text-md text-gray-600 pr-4 hover:text-gray-900">{balance} USDT</p>
                   <div class="w-1/2">
                     <button
@@ -462,7 +460,7 @@ export default function Wallet() {
                 <p className="text-sm leading-6 text-gray-600 px-6">
                   {userWalletAddress} is a wallet address identified by you. You can change your wallet address whenever you want. Be careful to enter a correct wallet address.
                 </p>
-                <div class="flex w-full items-center justify-between absolute bottom-0 p-6">
+                <div class="flex w-full items-center justify-between p-6">
                   <p class="text-xs text-gray-600 pr-4 hover:text-gray-900"></p>
                   <div class="w-1/2">
                     <button
@@ -501,7 +499,7 @@ export default function Wallet() {
               </div>
 
 
-              <div className="p-6 bg-gray-100 rounded-lg">
+              <div className="flex items-center justify-center p-6 bg-gray-100 rounded-lg">
 
                 <Line type="line" data={lineData} options={options} />
 

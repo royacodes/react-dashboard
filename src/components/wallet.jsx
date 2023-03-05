@@ -226,6 +226,7 @@ export default function Wallet() {
           console.log(`month m: ${month}`);
 
         });
+        setData(result.data);
         setChartData(newArray);
         
         console.log(`new array ${chartData}   ${newArray}`);

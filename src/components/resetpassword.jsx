@@ -93,9 +93,11 @@ const RESET_URL = '/auth/resetPassword/';
    
 	};
 
-  // if(success) {
-  //   navigate(appPath.LOGIN);
-  // }
+  if(success) {
+  setTimeout(() => {
+    navigate(appPath.LOGIN);
+}, 2000);
+  }
 
   return (
     <>
@@ -168,13 +170,7 @@ const RESET_URL = '/auth/resetPassword/';
               }
               
             </div>
-            <div className="flex items-center justify-between">
-                            <div className="text-sm">
-                                <a href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                    login
-                                </a>
-                            </div>
-                        </div>
+            
           </form>
         </div>
 

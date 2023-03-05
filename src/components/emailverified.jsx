@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { CircularProgress } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PlainNavBar from './plainnavbar'
 
 import api from '../api/authapi';
 const VERIFY_URL = '/verify-email/';
@@ -55,42 +56,20 @@ export default function EmailVerified() {
 
     return (
         <div>
+          <PlainNavBar/>
       {loading && <div className='grid w-full h-full place-items-center mt-36'> <CircularProgress style={{ 'color': '#5B21B6' }}></CircularProgress></div>}
       {!loading && <div className='grid w-full h-full place-items-center mt-36'></div>}
           {success && <div>
-            <section className="relative block" style={{ height: "50vh" }}>
-          <div
-            className="absolute top-0 w-full h-full bg-center bg-cover"
-            style={{
-                backgroundColor: "LightGray",            
-            }}
-          >
-            <span
-              id="blackOverlay"
-              className="w-full h-full absolute opacity-50 bg-black"
-            ></span>
-          </div>
+            <section className="relative block" style={{ height: "30vh" }}>
+         
           <div
             className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden"
             style={{ height: "70px" }}
           >
-            <svg
-              className="absolute bottom-0 overflow-hidden"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              version="1.1"
-              viewBox="0 0 2560 100"
-              x="0"
-              y="0"
-            >
-              <polygon
-                className="text-gray-300 fill-current"
-                points="2560 0 2560 100 0 100"
-              ></polygon>
-            </svg>
+      
           </div>
         </section>
-        <section className="relative py-16 bg-gray-300" style={{ height: "50vh" }}>
+        <section className="relative py-16" style={{ height: "50vh" }}>
           <div className="container mx-auto px-4">
             <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
               <div className="px-6">
